@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.adamglin.composeshadow.dropShadow
+import com.adamglin.composeshadow.innerShadow
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -37,7 +39,14 @@ fun MainCard(data: MainCardData) {
     val likes = data.likesCount
     Card(
         shape = RoundedCornerShape(0.dp),
-        modifier = Modifier.wrapContentWidth().shadow(0.dp, shape = RectangleShape).clickable {},
+        modifier = Modifier.wrapContentWidth().dropShadow(
+            shape = RectangleShape,
+            color = Color.Black.copy(1f),
+            offsetX = -4.dp,
+            offsetY = 4.dp,
+            blur = 0.dp,
+            spread = 0.dp,
+        ).clickable {},
         backgroundColor = Color(0xFFd8d8d8)
     ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -86,8 +95,20 @@ fun MainCardContent(description: String, imageUrl: String?) {
             contentDescription = "",
             modifier = Modifier
                 .fillMaxSize()
-                .border(
-                    border = BorderStroke(width = 3.dp, Color.White)
+                .innerShadow(
+                    shape = RectangleShape,
+                    color = Color.Black.copy(1f),
+                    offsetX = -1.dp,
+                    offsetY = 1.dp,
+                    blur = 0.dp,
+                    spread = 4.dp,
+                ).dropShadow(
+                    shape = RectangleShape,
+                    color = Color.White.copy(1f),
+                    offsetX = -4.dp,
+                    offsetY = 4.dp,
+                    blur = 0.dp,
+                    spread = 0.dp,
                 ),
             contentScale = ContentScale.Crop
         )
@@ -116,7 +137,6 @@ fun WrappedTextWithMaxWidth(text: String) {
         )
     }
 }
-
 
 
 //fun Modifier.innerShadow(
