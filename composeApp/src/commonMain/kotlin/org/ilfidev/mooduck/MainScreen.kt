@@ -84,7 +84,7 @@ fun MainScreen() {
                     MainCard(card)
                 }
             },
-            modifier = Modifier.fillMaxSize().padding(50.dp)
+            modifier = Modifier.fillMaxSize().padding(vertical = 50.dp, horizontal = 170.dp)
         )
 
     }
