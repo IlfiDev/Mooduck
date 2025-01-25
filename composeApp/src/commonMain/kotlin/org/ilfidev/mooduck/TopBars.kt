@@ -23,7 +23,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun MainActivityTopBar() {
+fun MainActivityTopBar(
+    headerMainText: String? = "",
+    switch: @Composable () -> Unit,
+    searchField: @Composable () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth().height(50.dp).background(Color(0xFF818181))
             .padding(top = 1.dp, bottom = 1.dp), verticalAlignment = Alignment.CenterVertically
@@ -33,7 +37,8 @@ fun MainActivityTopBar() {
             fontSize = 50.sp,
             style = TextStyle(color = Color(0xFF2200FF), fontWeight = FontWeight.ExtraBold)
         )
-        Switch(false, onCheckedChange = null)
-        SearchBarWithButtons(hint = "pososi",cornerShape = RoundedCornerShape(100.dp))
+        switch()
+        searchField()
+        
     }
 }

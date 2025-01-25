@@ -11,11 +11,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +28,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adamglin.composeshadow.dropShadow
+import com.adamglin.composeshadow.innerShadow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -120,4 +124,40 @@ fun SearchBarWithButtons(
             }
         }
     }
+}
+
+
+@Composable
+fun DefaultTextField(value: String, hintText: String = "", onValueChange: () -> Unit = {}) {
+    var textValue = value
+    BasicTextField(
+        value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChange()
+        },
+        modifier = Modifier.fillMaxWidth()
+            .height(41.dp)
+            .innerShadow(
+                shape = RectangleShape,
+                color = Color.Black.copy(1f),
+                offsetX = -1.dp,
+                offsetY = 1.dp,
+                blur = 0.dp,
+                spread = 4.dp,
+            ).dropShadow(
+                shape = RectangleShape,
+                color = Color.White.copy(0.8f),
+                offsetX = -4.dp,
+                offsetY = 4.dp,
+                blur = 0.dp,
+                spread = 0.dp,
+            ),
+    )
+}
+
+@Composable
+@Preview()
+fun DefaultTextFieldPreview() {
+    DefaultTextField("", hintText = "Login")
 }
