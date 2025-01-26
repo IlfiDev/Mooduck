@@ -1,4 +1,4 @@
-package org.ilfidev.mooduck
+package org.ilfidev.mooduck.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import kotlin.reflect.KProperty
 
 
 @Composable

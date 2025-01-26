@@ -12,6 +12,9 @@ import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.ilfidev.mooduck.ui.MainActivityTopBar
+import org.ilfidev.mooduck.ui.MainCard
+import org.ilfidev.mooduck.ui.SearchBarWithButtons
 
 @Composable
 fun MainScreen() {

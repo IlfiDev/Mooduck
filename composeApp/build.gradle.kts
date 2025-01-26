@@ -21,6 +21,7 @@ kotlin {
         }
     }
 
+
 //    listOf(
 //        iosX64(),
 //        iosArm64(),
@@ -61,6 +62,11 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.network.okhttp)
+
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+
+            implementation(libs.lifecycle.viewmodel)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -78,11 +84,20 @@ kotlin {
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
             implementation(libs.compose.shadow)
-            implementation(libs.ktorfit.lib)
+
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.lifecycle.viewmodel.wasm.js)
+            implementation(libs.koin.core.wasm.js)
+
         }
     }
 }
