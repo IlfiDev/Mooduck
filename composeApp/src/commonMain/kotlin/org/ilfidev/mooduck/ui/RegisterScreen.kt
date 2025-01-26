@@ -11,22 +11,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import org.ilfidev.mooduck.models.UserReg
+import org.ilfidev.mooduck.viewmodel.RegistrationViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun RegisterScreen() {
+    val viewModel = koinViewModel<RegistrationViewModel>()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         MainActivityTopBar("MOODUCK", {}, {})
-        AuthThing()
+        AuthThing(viewModel)
     }
 
 }
 
 @Composable
-fun AuthThing() {
+fun AuthThing(viewModel: RegistrationViewModel) {
     Column(modifier = Modifier.size(597.dp, 597.dp)) {
         Row(modifier = Modifier.width(284.dp).weight(1f)) {
-            DefaultButton("Sign up", {})
+            DefaultButton("Sign up", {viewModel.registerUser(UserReg("emil", "emil@gays.com", "sosal chlen", "emil", "prostouebaXDDDDDD"))})
             DefaultButton("Log in", {})
         }
         MainCard()
