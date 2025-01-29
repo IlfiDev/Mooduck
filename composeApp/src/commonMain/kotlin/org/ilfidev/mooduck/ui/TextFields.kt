@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adamglin.composeshadow.dropShadow
 import com.adamglin.composeshadow.innerShadow
+import mooduck.composeapp.generated.resources.Res
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -122,16 +123,47 @@ fun SearchBarWithButtons(
 }
 
 
+//@Composable
+//fun DefaultTextField(value: String, hintText: String = "", onValueChange: () -> Unit = {}) {
+//    BasicTextField(
+//        value = TextFieldValue(text = value),
+//        onValueChange = onValueChange,
+//        modifier = Modifier.fillMaxWidth()
+//            .height(41.dp)
+//            .innerShadow(
+//                shape = RectangleShape,
+//                color = Color.Black.copy(1f),
+//                offsetX = -1.dp,
+//                offsetY = 1.dp,
+//                blur = 0.dp,
+//                spread = 4.dp,
+//            ).dropShadow(
+//                shape = RectangleShape,
+//                color = Color.White.copy(0.8f),
+//                offsetX = -4.dp,
+//                offsetY = 4.dp,
+//                blur = 0.dp,
+//                spread = 0.dp,
+//            ),
+//    )
+//}
+
+
+@Preview
 @Composable
-fun DefaultTextField(value: String, hintText: String = "", onValueChange: () -> Unit = {}) {
-    var textValue = value
+fun DefaultTextField(
+    text: String,
+    hint: String,
+    modifier: Modifier = Modifier,
+    isEnabled: (Boolean) = true,
+    onSearchClicked: () -> Unit = {},
+    onTextChange: (String) -> Unit = {},
+) {
+//    var text by remember { mutableStateOf(TextFieldValue()) }
+    var textState by remember { mutableStateOf(TextFieldValue(text)) }
     BasicTextField(
-        value = textValue,
-        onValueChange = {
-            textValue = it
-            onValueChange()
-        },
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .height(41.dp)
             .innerShadow(
                 shape = RectangleShape,
@@ -148,11 +180,41 @@ fun DefaultTextField(value: String, hintText: String = "", onValueChange: () -> 
                 blur = 0.dp,
                 spread = 0.dp,
             ),
+        value = textState,
+        onValueChange = {
+            textState = it
+            onTextChange(it.text)
+        },
+        enabled = isEnabled,
+        textStyle = TextStyle(
+            color = Color.Black,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        decorationBox = { innerTextField ->
+            if (textState.text.isEmpty()) {
+                Text(
+                    text = hint,
+                    color = Color.Gray.copy(alpha = 0.5f),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            } else {
+
+            }
+            innerTextField()
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
+        singleLine = true
     )
 }
 
 @Composable
 @Preview()
 fun DefaultTextFieldPreview() {
-    DefaultTextField("", hintText = "Login")
+//    DefaultTextField("", hintText = "Login")
 }

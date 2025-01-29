@@ -8,6 +8,6 @@ data class UserReg(
     val username: String,
     val email: String,
     val password: String,
-    val name: String,
-    val bio: String
+    val name: String = ".",
+    val bio: String = "."
 )

@@ -35,7 +35,7 @@ class RegisterClient (
         } catch (e: SerializationException) {
             return Result.Error(NetworkError.SERIALIZATION)
         }
-
+        print("HUINYA ${response.status.value}")
         return when(response.status.value) {
             in 200..299 -> {
                 val result = response.body<UserRegResponse>()
@@ -43,7 +43,8 @@ class RegisterClient (
             }
             401 -> Result.Error(NetworkError.UNAUTHORIZED)
             409 -> Result.Error(NetworkError.CONFLICT)
-            else -> Result.Error(NetworkError.SERVER_ERROR)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
 }

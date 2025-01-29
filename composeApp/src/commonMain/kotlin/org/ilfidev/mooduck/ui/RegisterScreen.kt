@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ilfidev.mooduck.models.RegistrationScreenActions
+import org.ilfidev.mooduck.models.RegistrationScreenState
 import org.ilfidev.mooduck.models.UserReg
 import org.ilfidev.mooduck.viewmodel.RegistrationViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,35 +22,74 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun RegisterScreen() {
     val viewModel = koinViewModel<RegistrationViewModel>()
+    val state = viewModel.state.collectAsState()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         MainActivityTopBar("MOODUCK", {}, {})
-        AuthThing(viewModel)
+        AuthThing(state.value,
+            onUsernameChange = { newText ->
+                viewModel.onAction(
+                    RegistrationScreenActions.ChangeUsernameText(
+                        newText
+                    )
+                )
+            },
+            onEmailChange = { newText ->
+                viewModel.onAction(
+                    RegistrationScreenActions.ChangeEmailText(
+                        newText
+                    )
+                )
+            },
+            onPasswordChange = { newText ->
+                viewModel.onAction(
+                    RegistrationScreenActions.ChangePasswordText(
+                        newText
+                    )
+                )
+            },
+            onRegisterClick = { viewModel.registerUser() })
     }
 
 }
 
 @Composable
-fun AuthThing(viewModel: RegistrationViewModel) {
+fun AuthThing(
+    state: RegistrationScreenState,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRegisterClick: () -> Unit
+) {
     Column(modifier = Modifier.size(597.dp, 597.dp)) {
         Row(modifier = Modifier.width(284.dp).weight(1f)) {
-            DefaultButton("Sign up", {viewModel.registerUser(UserReg("emil", "emil@gays.com", "sosal chlen", "emil", "prostouebaXDDDDDD"))})
+            DefaultButton("Sign up", {})
             DefaultButton("Log in", {})
         }
-        MainCard()
+        MainCard(state, onUsernameChange, onEmailChange, onPasswordChange, onRegisterClick)
     }
 }
 
 @Composable
-fun MainCard() {
+fun MainCard(
+    state: RegistrationScreenState,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRegisterClick: () -> Unit
+) {
     Card(
         modifier = Modifier.size(597.dp, 547.dp),
         backgroundColor = Color(0xFFd8d8d8), shape = RectangleShape
     ) {
-        Column(modifier = Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(34.dp)) {
-
-            SignUpTextFields()
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(34.dp)
+        ) {
+            SignUpTextFields(state, onUsernameChange, onEmailChange, onPasswordChange)
             Divider(modifier = Modifier.fillMaxWidth())
-            Button(modifier = Modifier.fillMaxWidth(), onClick = {}) {
+            Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                onRegisterClick()
+            }) {
                 Text("Sign up")
             }
         }
@@ -55,13 +97,15 @@ fun MainCard() {
 }
 
 @Composable
-fun SignUpTextFields() {
-    var usernameField by remember { mutableStateOf("") }
-    var emailField by remember { mutableStateOf("") }
-    var passwordField by remember { mutableStateOf("") }
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(34.dp)) {
-        DefaultTextField(value = usernameField)
-        DefaultTextField(value = emailField)
-        DefaultTextField(value = passwordField)
+fun SignUpTextFields(
+    state: RegistrationScreenState,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(34.dp)) {
+        DefaultTextField(hint = "Username", text = state.username, onTextChange = onUsernameChange)
+        DefaultTextField(hint = "Email", text = state.email, onTextChange = onEmailChange)
+        DefaultTextField(hint = "Password", text = state.password, onTextChange = onPasswordChange)
     }
 }
