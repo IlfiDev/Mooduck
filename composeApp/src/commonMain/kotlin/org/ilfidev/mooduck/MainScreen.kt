@@ -10,77 +10,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.ilfidev.mooduck.ui.MainActivityTopBar
-import org.ilfidev.mooduck.ui.MainCard
+import org.ilfidev.mooduck.ui.MoodboardCard
 import org.ilfidev.mooduck.ui.SearchBarWithButtons
+import org.ilfidev.mooduck.viewmodel.MoodBoardPageActions
+import org.ilfidev.mooduck.viewmodel.MoodBoardsViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen() {
-    val list = listOf(
-        MainCardData("Аниме бабы", 666, "aaaawrstarstarstarstartarst"),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaqwfpqwfpristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetqwfpqwfpqwfpqwfpqwfpqwfpnariosetnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst",
-            imageUrl = "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/ntwPvV4GKGGHO3I7LcHMwhXfsw9.jpg"
-        ),
-        MainCardData
-            (
-            "Аниме мужики",
-            9999,
-            "iotneariostnoaristnaiorsntoarisearstarsqwfqwfptnariosetnoarietnarioeqwfptnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaristnarietnaqwfqqqwfpqwfpqwfpriosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "tneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnarioseqwfpqwfpqwfpqwfpqwfpqwfpqwfpqwfpqwfpqwfpqwftnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Mads_Mikkelsen_by_Gage_Skidmore_2.jpg/1024px-Mads_Mikkelsen_by_Gage_Skidmore_2.jpg",
-        ),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaristnarietnariosetnariostqwqwfpqwnioarsntaaaawrstarstarstarstartarst"
-        ),
-        MainCardData(
-            "Аниме мужикииииииИИииииИИИиИИИИиииИИИ",
-            9999,
-            "tnaiorsntoarisetnariosetnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstqwfqwqqqwf34partarst",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Kojima_Death_Stranding_2018.jpg"
-        ),
-        MainCardData("Аниме мужики", 9999, "aaaawrstarstarstarstartarst"),
-        MainCardData(
-            "Аниме мужики",
-            9999,
-            "arsiotneariostnoaristnaiorsntoarisetnariosetnoarietnarioetnaristnarietnariosetnariostnioarsntaaaawrstarstarstarstartarst"
-        ),
-    )
+    val viewModel = koinViewModel<MoodBoardsViewModel>()
+    val state = viewModel.state.collectAsState()
     Scaffold(topBar = {
         MainActivityTopBar(
             headerMainText = "MOOOODUCK",
-            switch = { Switch(false, onCheckedChange = null) },
-            searchField = { SearchBarWithButtons(hint = "pososi", cornerShape = RoundedCornerShape(100.dp)) })
+            switch = { Switch(state.value.moodBoardItemSwitchState, onCheckedChange = {viewModel.onAction(MoodBoardPageActions.ToggleSwitch)}) },
+            searchField = { SearchBarWithButtons(hint = "Start searching", cornerShape = RoundedCornerShape(100.dp)) })
 
     }
     ) {
@@ -89,8 +37,8 @@ fun MainScreen() {
             verticalItemSpacing = 40.dp,
             horizontalArrangement = Arrangement.spacedBy(40.dp),
             content = {
-                items(list) { card ->
-                    MainCard(card)
+                items(state.value.moodBoardCards) { card ->
+                    MoodboardCard(card, onCardClick = {text -> })
                 }
             },
             modifier = Modifier.fillMaxSize().padding(vertical = 50.dp, horizontal = 170.dp)

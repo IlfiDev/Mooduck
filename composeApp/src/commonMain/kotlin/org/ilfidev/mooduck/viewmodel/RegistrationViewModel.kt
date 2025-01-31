@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.ilfidev.mooduck.RegistrationRepository
+import org.ilfidev.mooduck.repository.RegistrationRepository
 import org.ilfidev.mooduck.models.RegisterPageState
 import org.ilfidev.mooduck.models.RegistrationScreenActions
 import org.ilfidev.mooduck.models.RegistrationScreenState
@@ -33,7 +34,7 @@ class RegistrationViewModel(
     }
 
     private fun updatePageState(pageButton: RegisterPageState) {
-        _state.value = state.value.copy(page = pageButton)
+        _state.update { it.copy(page = pageButton)}
     }
 
     private fun authUser() {
@@ -42,39 +43,41 @@ class RegistrationViewModel(
             val result = registrationRepository.auth(
                 stateValue.loginUsername, stateValue.loginPassword
             )
-            _state.value = when (result) {
-                is Result.Success -> {
-                    state.value.copy(authResult = Result.Success(result.data))
-                }
+            _state.update {
+                when (result) {
+                    is Result.Success -> {
+                        it.copy(authResult = Result.Success(result.data))
+                    }
 
-                is Result.Error -> {
-                    state.value.copy(authResult = Result.Error(result.error))
+                    is Result.Error -> {
+                        it.copy(authResult = Result.Error(result.error))
+                    }
                 }
             }
         }
     }
 
     private fun updateAuthPassword(newText: String) {
-        _state.value = state.value.copy(loginPassword = newText)
+        _state.update {it.copy(loginPassword = newText)}
     }
 
     private fun updateAuthUsername(newText: String) {
-        _state.value = state.value.copy(loginUsername = newText)
+        _state.update {it.copy(loginUsername = newText)}
     }
 
     private fun updateUsername(newValue: String) {
-        _state.value = state.value.copy(signupUsername = newValue)
+        _state.update {it.copy(signupUsername = newValue)}
     }
 
     private fun updateEmail(newValue: String) {
-        _state.value = state.value.copy(signupEmail = newValue)
+        _state.update {it.copy(signupEmail = newValue)}
     }
 
     private fun updatePassword(newValue: String) {
-        _state.value = state.value.copy(signupPassword = newValue)
+        _state.update {it.copy(signupPassword = newValue)}
     }
 
-    fun registerUser() {
+    private fun registerUser() {
         viewModelScope.launch {
             val stateValue = _state.value
             val result = registrationRepository.register(

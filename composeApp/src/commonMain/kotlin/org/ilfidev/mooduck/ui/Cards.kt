@@ -20,14 +20,13 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.adamglin.composeshadow.dropShadow
 import com.adamglin.composeshadow.innerShadow
-import org.ilfidev.mooduck.MainCardData
+import org.ilfidev.mooduck.models.MoodBoardCard
+import org.ilfidev.mooduck.models.UserRegResponse
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @Composable
-@Preview
-fun MainCard(data: MainCardData) {
-    val likes = data.likesCount
+fun MoodboardCard(data: MoodBoardCard, onCardClick: (Int) -> Unit) {
     Card(
         shape = RoundedCornerShape(0.dp),
         modifier = Modifier.wrapContentWidth().dropShadow(
@@ -37,12 +36,14 @@ fun MainCard(data: MainCardData) {
             offsetY = 4.dp,
             blur = 0.dp,
             spread = 0.dp,
-        ).clickable {},
+        ).clickable {
+            onCardClick(data.id)
+        },
         backgroundColor = Color(0xFFd8d8d8)
     ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            MainCardHeader(data.title, likes)
-            MainCardContent(data.description, data.imageUrl)
+            MainCardHeader(data.name, data.likes)
+            MainCardContent(data.description, data.author ,data.cover)
         }
     }
 }
@@ -74,7 +75,7 @@ fun MainCardHeader(title: String, likesCount: Int) {
 }
 
 @Composable
-fun MainCardContent(description: String, imageUrl: String?) {
+fun MainCardContent(description: String, author: UserRegResponse, imageUrl: String?) {
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 23.dp, horizontal = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,7 +108,7 @@ fun MainCardContent(description: String, imageUrl: String?) {
         Text(description)
 
         Row() {
-            Text("Author")
+            author.name?.let { Text(it) }
             Text("000.200")
         }
     }

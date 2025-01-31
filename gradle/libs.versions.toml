@@ -28,7 +28,7 @@ coil3 = "3.0.0-alpha08"
 koin = "3.6.0-Beta4"
 koinComposeMultiplatform = "1.2.0-Beta4"
 lifecycleViewmodelWasmJs = "2.9.0-alpha02"
-navigationCompose = "2.8.0-alpha02"
+navigationCompose = "2.8.0-alpha12"
 lifecycleViewModel = "2.8.7"
 
 
