@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ilfidev.mooduck.models.RegistrationScreenActions
 import org.ilfidev.mooduck.models.RegistrationScreenState
 import org.ilfidev.mooduck.models.UserReg
+import org.ilfidev.mooduck.util.Result
 import org.ilfidev.mooduck.viewmodel.RegistrationViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -107,5 +108,14 @@ fun SignUpTextFields(
         DefaultTextField(hint = "Username", text = state.username, onTextChange = onUsernameChange)
         DefaultTextField(hint = "Email", text = state.email, onTextChange = onEmailChange)
         DefaultTextField(hint = "Password", text = state.password, onTextChange = onPasswordChange)
+        when (state.registerResult) {
+            is Result.Success -> {
+                if (state.registerResult.data != -1) {
+                    Text("Вы успешно зарегистрировались!!!")
+                }
+            }
+
+            is Result.Error -> Text("Произошла ошибка: ${state.registerResult.error.name}!")
+        }
     }
 }

@@ -35,7 +35,6 @@ class RegisterClient (
         } catch (e: SerializationException) {
             return Result.Error(NetworkError.SERIALIZATION)
         }
-        print("HUINYA ${response.status.value}")
         return when(response.status.value) {
             in 200..299 -> {
                 val result = response.body<UserRegResponse>()

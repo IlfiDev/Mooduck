@@ -10,10 +10,11 @@ import org.ilfidev.mooduck.RegistrationRepository
 import org.ilfidev.mooduck.models.RegistrationScreenActions
 import org.ilfidev.mooduck.models.RegistrationScreenState
 import org.ilfidev.mooduck.models.UserReg
+import org.ilfidev.mooduck.util.Result
 
 class RegistrationViewModel(
     private val registrationRepository: RegistrationRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationScreenState())
     val state: StateFlow<RegistrationScreenState> = _state
@@ -38,11 +39,26 @@ class RegistrationViewModel(
     private fun updatePassword(newValue: String) {
         _state.value = state.value.copy(password = newValue)
     }
+
     fun registerUser() {
         viewModelScope.launch {
             val stateValue = _state.value
-            print("HUINYA AAA, $stateValue")
-            registrationRepository.register(UserReg(username = stateValue.username, email = stateValue.email, password = stateValue.password))
+            val result = registrationRepository.register(
+                UserReg(
+                    username = stateValue.username,
+                    email = stateValue.email,
+                    password = stateValue.password
+                )
+            )
+            _state.value = when (result) {
+                is Result.Success -> {
+                    state.value.copy(registerResult = Result.Success(result.data))
+                }
+
+                is Result.Error -> {
+                    state.value.copy(registerResult = Result.Error(result.error))
+                }
+            }
         }
     }
 }
