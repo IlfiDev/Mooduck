@@ -11,10 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ilfidev.mooduck.models.RegisterPageState
 import org.ilfidev.mooduck.models.RegistrationScreenActions
 import org.ilfidev.mooduck.models.RegistrationScreenState
-import org.ilfidev.mooduck.models.UserReg
 import org.ilfidev.mooduck.util.Result
 import org.ilfidev.mooduck.viewmodel.RegistrationViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,7 +47,32 @@ fun RegisterScreen() {
                     )
                 )
             },
-            onRegisterClick = { viewModel.registerUser() })
+            onAuthUsernameChange = { newText ->
+                viewModel.onAction(
+                    RegistrationScreenActions.ChangeAuthUsernameText(
+                        newText
+                    )
+                )
+
+            },
+            onAuthPasswordChange = { newText ->
+                viewModel.onAction(
+                    RegistrationScreenActions.ChangeAuthPasswordText(
+                        newText
+                    )
+                )
+
+            },
+            onPageChange = { newPageState ->
+                viewModel.onAction(
+                    RegistrationScreenActions.PressPageButton(newPageState)
+                )
+            },
+            onMainButtonClick = { viewModel.onAction(RegistrationScreenActions.PressRegisterButton) },
+            onAuthClick = { viewModel.onAction(RegistrationScreenActions.PressLoginButton)}
+
+        )
+
     }
 
 }
@@ -59,24 +83,32 @@ fun AuthThing(
     onUsernameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onRegisterClick: () -> Unit
+    onAuthUsernameChange: (String) -> Unit,
+    onAuthPasswordChange: (String) -> Unit,
+    onPageChange: (RegisterPageState) -> Unit,
+    onMainButtonClick: () -> Unit,
+    onAuthClick: () -> Unit
 ) {
     Column(modifier = Modifier.size(597.dp, 597.dp)) {
         Row(modifier = Modifier.width(284.dp).weight(1f)) {
-            DefaultButton("Sign up", {})
-            DefaultButton("Log in", {})
+            DefaultButton("Sign up") { onPageChange(RegisterPageState.REGISTER) }
+            DefaultButton("Log in") { onPageChange(RegisterPageState.LOGIN) }
         }
-        MainCard(state, onUsernameChange, onEmailChange, onPasswordChange, onRegisterClick)
+        if (state.page == RegisterPageState.REGISTER) {
+            MainRegisterCard(state, onUsernameChange, onEmailChange, onPasswordChange, onMainButtonClick)
+        } else {
+            MainLoginCard(state = state, onUsernameChange = onAuthUsernameChange, onPasswordChange = onAuthPasswordChange, onMainButtonClick = onAuthClick)
+        }
     }
 }
 
 @Composable
-fun MainCard(
+fun MainRegisterCard(
     state: RegistrationScreenState,
-    onUsernameChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onRegisterClick: () -> Unit
+    onUsernameChange: (String) -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onMainButtonClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.size(597.dp, 547.dp),
@@ -89,9 +121,35 @@ fun MainCard(
             SignUpTextFields(state, onUsernameChange, onEmailChange, onPasswordChange)
             Divider(modifier = Modifier.fillMaxWidth())
             Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                onRegisterClick()
+                onMainButtonClick()
             }) {
                 Text("Sign up")
+            }
+        }
+    }
+}
+
+@Composable
+fun MainLoginCard(
+    state: RegistrationScreenState,
+    onUsernameChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onMainButtonClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.size(597.dp, 547.dp),
+        backgroundColor = Color(0xFFd8d8d8), shape = RectangleShape
+    ) {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(34.dp)
+        ) {
+            LoginTextFields(state, onUsernameChange, onPasswordChange)
+            Divider(modifier = Modifier.fillMaxWidth())
+            Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                onMainButtonClick()
+            }) {
+                Text("Login")
             }
         }
     }
@@ -105,9 +163,9 @@ fun SignUpTextFields(
     onPasswordChange: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(34.dp)) {
-        DefaultTextField(hint = "Username", text = state.username, onTextChange = onUsernameChange)
-        DefaultTextField(hint = "Email", text = state.email, onTextChange = onEmailChange)
-        DefaultTextField(hint = "Password", text = state.password, onTextChange = onPasswordChange)
+        DefaultTextField(hint = "Username", text = state.signupUsername, onTextChange = onUsernameChange)
+        DefaultTextField(hint = "Email", text = state.signupEmail, onTextChange = onEmailChange)
+        DefaultTextField(hint = "Password", text = state.signupPassword, onTextChange = onPasswordChange)
         when (state.registerResult) {
             is Result.Success -> {
                 if (state.registerResult.data != -1) {
@@ -117,5 +175,25 @@ fun SignUpTextFields(
 
             is Result.Error -> Text("Произошла ошибка: ${state.registerResult.error.name}!")
         }
+    }
+}
+
+@Composable
+fun LoginTextFields(
+    state: RegistrationScreenState,
+    onAuthUsernameChange: (String) -> Unit,
+    onAuthPasswordChange: (String) -> Unit,
+) {
+    DefaultTextField(hint = "Username", text = state.loginUsername, onTextChange = onAuthUsernameChange)
+    DefaultTextField(hint = "Password", text = state.loginPassword, onTextChange = onAuthPasswordChange)
+    when (state.authResult) {
+        is Result.Success -> {
+            if (state.authResult.data != "") {
+                Text("Авторизация прошла успешно, переносим вас к доскам!!!")
+                Text("${state.authResult.data}")
+            }
+        }
+
+        is Result.Error -> Text("Произошла ошибка: ${state.registerResult}!")
     }
 }
