@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,9 +22,13 @@ import org.ilfidev.mooduck.viewmodel.MoodBoardsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MainScreen() {
+fun MoodBoardsScreen() {
     val viewModel = koinViewModel<MoodBoardsViewModel>()
     val state = viewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        println("MoodboardGovna fetched")
+        viewModel.onAction(MoodBoardPageActions.FetchData)
+    }
     Scaffold(topBar = {
         MainActivityTopBar(
             headerMainText = "MOOOODUCK",
@@ -38,6 +43,7 @@ fun MainScreen() {
             horizontalArrangement = Arrangement.spacedBy(40.dp),
             content = {
                 items(state.value.moodBoardCards) { card ->
+                    println("MoodBoardGovna ${card.name}")
                     MoodboardCard(card, onCardClick = {text -> })
                 }
             },

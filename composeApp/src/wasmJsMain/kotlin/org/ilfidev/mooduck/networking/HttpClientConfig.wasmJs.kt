@@ -4,7 +4,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.js.Js
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
@@ -27,9 +29,9 @@ actual class HttpClientConfigImpl actual constructor() : HttpClientConfig {
                 )
             }
             install(Auth) {
-                basic {
-                    credentials {
-                        BasicAuthCredentials("aa", "aa")
+                bearer {
+                    loadTokens {
+                        BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2b3ZhIiwiZXhwIjoxNzM5MDU2NDEzfQ.YWvMK9npY4AtqqAGtnAUDZekJjouQya9UlRoAJBpoik", "aaa")
                     }
                 }
             }

@@ -5,6 +5,7 @@ import org.ilfidev.mooduck.BoardsRepositoryDbImpl
 import org.ilfidev.mooduck.repository.RegistrationRepository
 import org.ilfidev.mooduck.repository.RegistrationRepositoryImpl
 import org.ilfidev.mooduck.networking.WebClient
+import org.ilfidev.mooduck.repository.MoodBoardRepository
 import org.ilfidev.mooduck.repository.MoodBoardRepositoryImpl
 import org.ilfidev.mooduck.viewmodel.MoodBoardsViewModel
 import org.ilfidev.mooduck.viewmodel.RegistrationViewModel
@@ -20,7 +21,7 @@ val sharedModule = module {
     singleOf(::BoardsRepositoryDbImpl).bind<BoardsDataRepository>()
     singleOf(::RegistrationRepositoryImpl).bind<RegistrationRepository>()
     singleOf(::WebClient)
-    singleOf(::MoodBoardRepositoryImpl).bind<MoodBoardRepositoryImpl>()
+    singleOf(::MoodBoardRepositoryImpl).bind<MoodBoardRepository>()
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::MoodBoardsViewModel)
 }

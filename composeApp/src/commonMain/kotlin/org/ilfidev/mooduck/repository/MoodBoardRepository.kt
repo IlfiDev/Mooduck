@@ -13,8 +13,6 @@ class MoodBoardRepositoryImpl(private val client: WebClient) : MoodBoardReposito
     override suspend fun fetchBoards(
         query: String,
         page: Int
-    ): Result<MoodBoardPage, NetworkError> {
-        TODO("Not yet implemented")
-    }
+    ) = client.getMoodBoards(query, page)
 
 }

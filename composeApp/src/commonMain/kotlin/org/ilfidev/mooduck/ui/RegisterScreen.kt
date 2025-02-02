@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import org.ilfidev.mooduck.MoodBoardsScreen
 import org.ilfidev.mooduck.models.RegisterPageState
 import org.ilfidev.mooduck.models.RegistrationScreenActions
 import org.ilfidev.mooduck.models.RegistrationScreenState
@@ -20,7 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     val viewModel = koinViewModel<RegistrationViewModel>()
     val state = viewModel.state.collectAsState()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -69,7 +72,8 @@ fun RegisterScreen() {
                 )
             },
             onMainButtonClick = { viewModel.onAction(RegistrationScreenActions.PressRegisterButton) },
-            onAuthClick = { viewModel.onAction(RegistrationScreenActions.PressLoginButton)}
+            onAuthClick = { viewModel.onAction(RegistrationScreenActions.PressLoginButton)},
+            onMoveToBoards = { navController.navigate(MoodBoardsScreen(1)) }
 
         )
 
@@ -87,7 +91,8 @@ fun AuthThing(
     onAuthPasswordChange: (String) -> Unit,
     onPageChange: (RegisterPageState) -> Unit,
     onMainButtonClick: () -> Unit,
-    onAuthClick: () -> Unit
+    onAuthClick: () -> Unit,
+    onMoveToBoards: () -> Unit
 ) {
     Column(modifier = Modifier.size(597.dp, 597.dp)) {
         Row(modifier = Modifier.width(284.dp).weight(1f)) {
@@ -97,7 +102,7 @@ fun AuthThing(
         if (state.page == RegisterPageState.REGISTER) {
             MainRegisterCard(state, onUsernameChange, onEmailChange, onPasswordChange, onMainButtonClick)
         } else {
-            MainLoginCard(state = state, onUsernameChange = onAuthUsernameChange, onPasswordChange = onAuthPasswordChange, onMainButtonClick = onAuthClick)
+            MainLoginCard(state = state, onUsernameChange = onAuthUsernameChange, onPasswordChange = onAuthPasswordChange, onMainButtonClick = onAuthClick, onMoveToBoards = onMoveToBoards)
         }
     }
 }
@@ -134,7 +139,8 @@ fun MainLoginCard(
     state: RegistrationScreenState,
     onUsernameChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
-    onMainButtonClick: () -> Unit
+    onMainButtonClick: () -> Unit,
+    onMoveToBoards: () -> Unit,
 ) {
     Card(
         modifier = Modifier.size(597.dp, 547.dp),
@@ -144,7 +150,7 @@ fun MainLoginCard(
             modifier = Modifier.padding(22.dp),
             verticalArrangement = Arrangement.spacedBy(34.dp)
         ) {
-            LoginTextFields(state, onUsernameChange, onPasswordChange)
+            LoginTextFields(state, onUsernameChange, onPasswordChange, onMoveToBoards)
             Divider(modifier = Modifier.fillMaxWidth())
             Button(modifier = Modifier.fillMaxWidth(), onClick = {
                 onMainButtonClick()
@@ -183,6 +189,7 @@ fun LoginTextFields(
     state: RegistrationScreenState,
     onAuthUsernameChange: (String) -> Unit,
     onAuthPasswordChange: (String) -> Unit,
+    moveToBoards: () -> Unit,
 ) {
     DefaultTextField(hint = "Username", text = state.loginUsername, onTextChange = onAuthUsernameChange)
     DefaultTextField(hint = "Password", text = state.loginPassword, onTextChange = onAuthPasswordChange)
@@ -190,6 +197,7 @@ fun LoginTextFields(
         is Result.Success -> {
             if (state.authResult.data != "") {
                 Text("Авторизация прошла успешно, переносим вас к доскам!!!")
+                moveToBoards()
                 Text("${state.authResult.data}")
             }
         }

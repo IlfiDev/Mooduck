@@ -22,6 +22,8 @@ import com.adamglin.composeshadow.dropShadow
 import com.adamglin.composeshadow.innerShadow
 import org.ilfidev.mooduck.models.MoodBoardCard
 import org.ilfidev.mooduck.models.UserRegResponse
+import org.ilfidev.mooduck.util.decodeBase64ToImageBitmap
+import org.ilfidev.mooduck.viewmodel.MoodBoardPageState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -43,7 +45,7 @@ fun MoodboardCard(data: MoodBoardCard, onCardClick: (Int) -> Unit) {
     ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             MainCardHeader(data.name, data.likes)
-            MainCardContent(data.description, data.author ,data.cover)
+            MainCardContent(data)
         }
     }
 }
@@ -75,7 +77,7 @@ fun MainCardHeader(title: String, likesCount: Int) {
 }
 
 @Composable
-fun MainCardContent(description: String, author: UserRegResponse, imageUrl: String?) {
+fun MainCardContent(data: MoodBoardCard) {
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 23.dp, horizontal = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +85,7 @@ fun MainCardContent(description: String, author: UserRegResponse, imageUrl: Stri
     ) {
 
         AsyncImage(
-            model = imageUrl,
+            model = decodeBase64ToImageBitmap(data.cover?:""),
             contentDescription = "",
             modifier = Modifier
                 .fillMaxSize()
@@ -105,10 +107,10 @@ fun MainCardContent(description: String, author: UserRegResponse, imageUrl: Stri
             contentScale = ContentScale.Crop
         )
 
-        Text(description)
+        Text(data.description?:"")
 
         Row() {
-            author.name?.let { Text(it) }
+            data.author.name?.let { Text(it) }
             Text("000.200")
         }
     }
