@@ -28,13 +28,13 @@ actual class HttpClientConfigImpl actual constructor() : HttpClientConfig {
                     }
                 )
             }
-            install(Auth) {
+        /*    install(Auth) {
                 bearer {
                     loadTokens {
                         BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2b3ZhIiwiZXhwIjoxNzM5MDU2NDEzfQ.YWvMK9npY4AtqqAGtnAUDZekJjouQya9UlRoAJBpoik", "aaa")
                     }
                 }
-            }
+            }*/
         }
 
     }

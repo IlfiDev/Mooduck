@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -26,10 +27,10 @@ class WebClient (
         val response = try {
 
             httpClient.post(
-                urlString = "http://192.168.1.59:8888/user"
+                urlString = "https://mooduckapi.ilfidevservices.keenetic.pro/user"
             ) {
-                parameter("text", "")
-                contentType(ContentType.Application.Json)
+//                contentType(ContentType.Application.Json)
+                header("Origin", "https://mooduck.ilfidevservices.keentic.pro")
                 setBody(
                     user
                 )
@@ -54,8 +55,9 @@ class WebClient (
     suspend fun sendAuthRequest(username: String, password: String) : Result<String, NetworkError> {
         val response = try {
             httpClient.post(
-                urlString = "http://192.168.1.59:8888/auth"
+                urlString = "https://mooduckapi.ilfidevservices.keenetic.pro/auth"
             ) {
+                header("Origin", "https://mooduck.ilfidevservices.keentic.pro")
                 setBody(FormDataContent(Parameters.build {
                     append("username", username)
                     append("password", password)
@@ -86,9 +88,11 @@ class WebClient (
     suspend fun getMoodBoards(searchQuery: String, page: Int) : Result<MoodBoardPage, NetworkError> {
         val response = try {
             httpClient.get(
-                urlString = "http://192.168.1.59:8888/moodboard"
+                urlString = "https://mooduckapi.ilfidevservices.keenetic.pro/moodboard"
             ) {
 
+                header("Origin", "https://mooduck.ilfidevservices.keentic.pro")
+                contentType(ContentType.Application.FormUrlEncoded)
                 url {
                     parameters.append("search", searchQuery)
                     parameters.append("page", page.toString())
